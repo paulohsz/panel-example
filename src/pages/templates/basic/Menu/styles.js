@@ -1,5 +1,5 @@
 import styled from "styled-components";
-//https://coolors.co/4f6d7a-c0d6df-dbe9ee-4a6fa5-166088
+//https://coolors.co/4f6d7a-c0d6df-cee0e7-dbe9ee-141e29-4a6fa5-166088
 
 export const MenuBasic = styled.nav`
   width: 100%;
@@ -13,7 +13,7 @@ export const MenuBasic = styled.nav`
     margin: 0px;
   }
   ul li {
-    width: 150px;
+    width: 110px;
     float: left;
   }
 

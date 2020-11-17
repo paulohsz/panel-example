@@ -1,5 +1,6 @@
 import React from 'react';
 import Menu from '../templates/basic/Menu';
+import { MenuData } from "../../data/initial_data.js";
 
 
 function Home() {
@@ -7,7 +8,8 @@ function Home() {
 
   return (
     <div>
-      <Menu />
+      <Menu MenuData={MenuData} />
+      
     </div>
   );
 }
