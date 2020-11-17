@@ -16,8 +16,6 @@ ReactDOM.render(
 
 /*
 https://material-ui.com/pt/api/menu/
-
-
 https://css-tricks.com/solved-with-css-dropdown-menus/
 https://semantic-ui.com/modules/dropdown.html#/usage
 https://www.youtube.com/watch?v=RzctM_ZXWAo
