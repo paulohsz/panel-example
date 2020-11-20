@@ -5,6 +5,7 @@ export const MenuBasic = styled.nav`
   width: 100%;
   height: 50px;
   background-color: #dbe9ee;
+  margin-bottom: 16px;
 
   > ul {
     list-style: none;
@@ -39,6 +40,7 @@ export const MenuBasic = styled.nav`
     visibility: hidden;
     padding: 0px;
     margin: 0px;
+    z-index: 500;
   }
   ul li:hover ul {
     visibility: visible;
