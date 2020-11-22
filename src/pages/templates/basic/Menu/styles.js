@@ -40,7 +40,7 @@ export const MenuBasic = styled.nav`
     visibility: hidden;
     padding: 0px;
     margin: 0px;
-    z-index: 500;
+    z-index: 10;
   }
   ul li:hover ul {
     visibility: visible;
@@ -67,6 +67,8 @@ export const MenuBasic = styled.nav`
 
     > ul {
       margin-left: 0;
+      position: ${(props) => (props.checked ? "relative" : "absolute")};
+    transition: all 0.5s;
     }
 
     ul li {
