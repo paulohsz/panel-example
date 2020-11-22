@@ -216,10 +216,11 @@ function FormCreate() {
                   </Fragment>
                 ))}
             </Box>
-
+            <Typography  component="div" align="center">
             <Button type="submit" variant="contained" color="primary">
               Cadastrar
             </Button>
+            </Typography>
           </form>
         </CardContent>
       </Card>
