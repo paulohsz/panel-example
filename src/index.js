@@ -20,4 +20,8 @@ https://css-tricks.com/solved-with-css-dropdown-menus/
 https://semantic-ui.com/modules/dropdown.html#/usage
 https://www.youtube.com/watch?v=RzctM_ZXWAo
 https://drive.google.com/file/d/1ZUpPEa46v6RQgeDlW-KQgKTLu91TL6ri/edit
+
+
+open -n -a /Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome --args --user-data-dir="/tmp/chrome_dev_test" --disable-web-security
+
 */

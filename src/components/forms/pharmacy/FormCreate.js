@@ -1,4 +1,7 @@
 import React, { useState, Fragment } from "react";
+
+import * as PharmacyAPI from '../../../services/PharmacyAPI';
+
 import {
   Box,
   Button,
@@ -14,6 +17,7 @@ import {
 import AddBox from "@material-ui/icons/AddBox";
 import IconButton from "@material-ui/core/IconButton";
 import DeleteIcon from "@material-ui/icons/Delete";
+
 import {DividerCompostos} from "./styles";
 
 function FormCreate() {
@@ -34,9 +38,27 @@ function FormCreate() {
     setValues({ ...values, [event.target.id]: event.target.value });
   };
 
+  const getMedicine = () => {
+    return { 
+      nome: values.name, 
+      fabricante: values.fabricante,
+      descricao: values.descricao,
+      observacao: values.observacao,
+      compostos: values.compostos
+    };
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault();
+    
     console.log("Submit!");
+
+    const medicine = getMedicine();
+
+    console.log(medicine);
+
+    handleSubmitCreate(medicine);
+
     //console.log(submitLogin(values.username, values.password));
   };
 
@@ -52,6 +74,7 @@ function FormCreate() {
     valuesCompostos.splice(index, 1);
     setValues({ ...values, compostos: valuesCompostos });
   };
+  
 
   const handleCompostoChange = (index, event) => {
     const valuesCompostos = [...values.compostos];
@@ -69,6 +92,52 @@ function FormCreate() {
 
     setValues({ ...values, compostos: valuesCompostos });
   };
+
+  const handleSubmitCreate = async (medicine) => {
+
+    try {
+
+      const { success, action, error } = await PharmacyAPI.createMedicine(medicine);
+
+      if (success) {
+        /*this.props.dispatch(action);
+        this.setState({
+          openSnackBar: true,
+          messageSnackBarA: "Successfully created",
+          messageSnackBarB: "",
+          alertSnackBar: "success",
+        });*/
+        console.log("Cadastrado com suceso!");
+        console.log(action);
+        return "OK";
+
+      } else {
+        /*(error.errorStatus === 422) ?
+        this.setState({
+          messageSnackBarA: "Check the form",
+          messageSnackBarB: "",
+          alertSnackBar: "warning",
+        })
+        : this.setState({
+          messageSnackBarA: error.errorMsgGeneral,
+          messageSnackBarB: "",
+          alertSnackBar: "error",
+        });
+
+        this.setState({openSnackBar: true});
+        */
+
+       console.log("Deu ruim!");
+       console.log(error.errorMsg);
+
+        return error.errorMsg;
+      }
+
+    } catch (e) {
+      console.log('Não pude executar a request');
+    }
+
+  }
 
   return (
     <Container maxWidth="md">
@@ -203,7 +272,7 @@ function FormCreate() {
                           </Grid>
                         </Grid>
                       
-                      <Grid item md={1} xs={2}>
+                      <Grid item md={1} xs={2} align="center">
                           <IconButton
                             aria-label="Deletar"
                             onClick={() => handleRemoveFields(index)}
