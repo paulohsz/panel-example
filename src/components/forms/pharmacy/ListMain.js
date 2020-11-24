@@ -1,6 +1,6 @@
-import React, {  } from "react";
+import React, { useEffect, useState } from "react";
 
-//import * as PharmacyAPI from "../../../services/PharmacyAPI";
+import * as PharmacyAPI from "../../../services/PharmacyAPI";
 
 import {
   Box,
@@ -20,7 +20,41 @@ import EditIcon from "@material-ui/icons/Edit";
 import AddCircleOutline from "@material-ui/icons/AddCircleOutline";
 
 function ListMain() {
-  /*const [values, setValues] = useState({
+
+  const [values, setValues] = useState({
+    listMedicine: [],
+  });
+
+  useEffect(() => {
+    async function loadMedicine() {
+      const response = await PharmacyAPI.loadMedicine();
+
+      if (response.success) {
+        setValues({...values, listMedicine: response.payload});
+        console.log("Sucess load!");
+        console.log(response);
+        //this.props.dispatch({type: "SORT", field: "fabricante"});
+      } else {
+        console.log(response.error);
+      }
+    }
+
+    loadMedicine();
+  }, []); /*
+        console.log("Cadastrado com suceso!");
+        console.log(action);
+        return "OK";
+      } else {*/ /*
+
+        console.log("Deu ruim!");
+        console.log(error.errorMsg);
+
+        return error.errorMsg;
+      }
+    } catch (e) {
+      console.log("Não pude executar a request");
+    }
+  };*/ /*const [values, setValues] = useState({
     name: "",
     fabricante: "",
     descricao: "",
@@ -33,7 +67,14 @@ function ListMain() {
     },
   });*/
 
-  /*const handleChange = () => (event) => {
+  /*
+  const handleSubmitCreate = async (medicine) => {
+    try {
+      const { success, action, error } = await PharmacyAPI.createMedicine(
+        medicine
+      );
+
+      if (success) {*/ /*const handleChange = () => (event) => {
     setValues({ ...values, [event.target.id]: event.target.value });
   };*/
 
@@ -71,16 +112,16 @@ function ListMain() {
     valuesCompostos.splice(index, 1);
     setValues({ ...values, compostos: valuesCompostos });
   };*/
-/*
+  /*
   const handleCompostoChange = (index, event) => {
     const valuesCompostos = [...values.compostos];
     const { id, value } = event.target;
 */
-    /*
+  /*
     if (index === 0) {
       this.handleValidInputs(`compostos${this.CapitalizeFirstLetter(id)}`, value);
     }*/
-/*
+  /*
     if (id === "nome") {
       valuesCompostos[index].nome = value;
     } else {
@@ -89,26 +130,13 @@ function ListMain() {
 
     setValues({ ...values, compostos: valuesCompostos });
   };
-*//*
-  const handleSubmitCreate = async (medicine) => {
-    try {
-      const { success, action, error } = await PharmacyAPI.createMedicine(
-        medicine
-      );
-
-      if (success) {*/
-        /*this.props.dispatch(action);
+*/ /*this.props.dispatch(action);
         this.setState({
           openSnackBar: true,
           messageSnackBarA: "Successfully created",
           messageSnackBarB: "",
           alertSnackBar: "success",
-        });*//*
-        console.log("Cadastrado com suceso!");
-        console.log(action);
-        return "OK";
-      } else {*/
-        /*(error.errorStatus === 422) ?
+        });*/ /*(error.errorStatus === 422) ?
         this.setState({
           messageSnackBarA: "Check the form",
           messageSnackBarB: "",
@@ -121,19 +149,7 @@ function ListMain() {
         });
 
         this.setState({openSnackBar: true});
-        *//*
-
-        console.log("Deu ruim!");
-        console.log(error.errorMsg);
-
-        return error.errorMsg;
-      }
-    } catch (e) {
-      console.log("Não pude executar a request");
-    }
-  };*/
-
-  return (
+        */ return (
     <Container maxWidth="md">
       <Box
         border={1}
@@ -176,26 +192,33 @@ function ListMain() {
             </Grid>
           </Grid>
           <Divider />
-          <Grid container spacing={0} alignItems="center" justify="space-between">
+          <Grid
+            container
+            spacing={0}
+            alignItems="center"
+            justify="space-between"
+          >
             <Grid item xs={3} align="center">
               {
                 //medicine.nome
-              }Tandrilax
+              }
+              Tandrilax
             </Grid>
 
             <Grid item xs={3} align="center">
               {
                 //medicine.fabricante
-              }Aché
+              }
+              Aché
             </Grid>
 
             <Grid item xs={4} align="left">
               <List>
                 {[
-                    {nome: "Cafeína", quantidade: "30 mg"},
-                    {nome: "Paracetamol", quantidade: "300 mg"},
-                    {nome: "Diclofenaco Sódico", quantidade: "50 mg"},
-                    {nome: "Carisoprodol", quantidade: "125 mg"}
+                  { nome: "Cafeína", quantidade: "30 mg" },
+                  { nome: "Paracetamol", quantidade: "300 mg" },
+                  { nome: "Diclofenaco Sódico", quantidade: "50 mg" },
+                  { nome: "Carisoprodol", quantidade: "125 mg" },
                 ].map((composto, index) => (
                   <li key={index}>
                     {composto.nome} {composto.quantidade}
@@ -223,7 +246,6 @@ function ListMain() {
           </Grid>
         </Box>
       </Box>
-      
     </Container>
   );
 }
