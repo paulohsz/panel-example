@@ -1,7 +1,8 @@
 import React from 'react';
 import Menu from '../templates/basic/Menu';
 import { MenuData } from "../../data/initial_data.js";
-import FormCreate from "../../components/forms/pharmacy/FormCreate";
+//import FormCreate from "../../components/forms/pharmacy/FormCreate";
+import ListMain from "../../components/forms/pharmacy/ListMain";
 
 
 function Home() {
@@ -10,7 +11,7 @@ function Home() {
   return (
     <div>
       <Menu MenuData={MenuData} />
-      <FormCreate />
+      <ListMain />
     </div>
   );
 }

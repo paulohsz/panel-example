@@ -21,6 +21,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import {DividerCompostos} from "./styles";
 
 function FormCreate() {
+  
   const [values, setValues] = useState({
     name: "",
     fabricante: "",
@@ -59,7 +60,6 @@ function FormCreate() {
 
     handleSubmitCreate(medicine);
 
-    //console.log(submitLogin(values.username, values.password));
   };
 
   const handleAddFields = () => {
@@ -80,7 +80,8 @@ function FormCreate() {
     const valuesCompostos = [...values.compostos];
     const { id, value } = event.target;
 
-    /*if (index === 0) {
+    /*
+    if (index === 0) {
       this.handleValidInputs(`compostos${this.CapitalizeFirstLetter(id)}`, value);
     }*/
 
