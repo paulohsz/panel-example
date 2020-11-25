@@ -11,18 +11,28 @@ import {
   //Tooltip,
   Typography,
   Divider,
-  IconButton,
-  List,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Slide,
+  Backdrop,
+  CircularProgress,
 } from "@material-ui/core";
 
-import DeleteIcon from "@material-ui/icons/Delete";
-import EditIcon from "@material-ui/icons/Edit";
 import AddCircleOutline from "@material-ui/icons/AddCircleOutline";
+import TheMedicine from "./TheMedicine";
+
+const TransitionUp = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 function ListMain() {
-
+  const [listMedicine, setListMedicine] = useState([]);
   const [values, setValues] = useState({
-    listMedicine: [],
+    openDialog: false,
+    openBackDrop: true,
+    medicineDelete: { compostos: [] },
   });
 
   useEffect(() => {
@@ -30,7 +40,7 @@ function ListMain() {
       const response = await PharmacyAPI.loadMedicine();
 
       if (response.success) {
-        setValues({...values, listMedicine: response.payload});
+        setListMedicine(response.payload);
         console.log("Sucess load!");
         console.log(response);
         //this.props.dispatch({type: "SORT", field: "fabricante"});
@@ -40,11 +50,15 @@ function ListMain() {
     }
 
     loadMedicine();
-  }, []); /*
-        console.log("Cadastrado com suceso!");
-        console.log(action);
-        return "OK";
-      } else {*/ /*
+  }, []);
+
+  const handleConfirmDelete = (medicine) => {
+    setValues({ ...values, openDialog: true, medicineDelete: medicine });
+  };
+
+  const handleCloseDialog = (medicine) => {
+    setValues({ ...values, openDialog: false });
+  }; /*
 
         console.log("Deu ruim!");
         console.log(error.errorMsg);
@@ -65,20 +79,9 @@ function ListMain() {
       compostosNome: "",
       compostosQuantidade: "",
     },
-  });*/
-
-  /*
-  const handleSubmitCreate = async (medicine) => {
-    try {
-      const { success, action, error } = await PharmacyAPI.createMedicine(
-        medicine
-      );
-
-      if (success) {*/ /*const handleChange = () => (event) => {
+  });*/ /*const handleChange = () => (event) => {
     setValues({ ...values, [event.target.id]: event.target.value });
-  };*/
-
-  /*const getMedicine = () => {
+  };*/ /*const getMedicine = () => {
     return {
       nome: values.name,
       fabricante: values.fabricante,
@@ -86,9 +89,7 @@ function ListMain() {
       observacao: values.observacao,
       compostos: values.compostos,
     };
-  };*/
-
-  /*const handleSubmit = (event) => {
+  };*/ /*const handleSubmit = (event) => {
     event.preventDefault();
 
     console.log("Submit!");
@@ -98,9 +99,7 @@ function ListMain() {
     console.log(medicine);
 
     handleSubmitCreate(medicine);
-  };*/
-
-  /*const handleAddFields = () => {
+  };*/ /*const handleAddFields = () => {
     const valuesCompostos = [...values.compostos];
     valuesCompostos.push({ nome: "", quantidade: "" });
     console.log(valuesCompostos);
@@ -112,7 +111,19 @@ function ListMain() {
     valuesCompostos.splice(index, 1);
     setValues({ ...values, compostos: valuesCompostos });
   };*/
+
   /*
+        console.log("Cadastrado com suceso!");
+        console.log(action);
+        return "OK";
+      } else {*/ /*
+  const handleSubmitCreate = async (medicine) => {
+    try {
+      const { success, action, error } = await PharmacyAPI.createMedicine(
+        medicine
+      );
+
+      if (success) {*/ /*
   const handleCompostoChange = (index, event) => {
     const valuesCompostos = [...values.compostos];
     const { id, value } = event.target;
@@ -191,61 +202,48 @@ function ListMain() {
               Açōes
             </Grid>
           </Grid>
-          <Divider />
-          <Grid
-            container
-            spacing={0}
-            alignItems="center"
-            justify="space-between"
-          >
-            <Grid item xs={3} align="center">
-              {
-                //medicine.nome
-              }
-              Tandrilax
-            </Grid>
-
-            <Grid item xs={3} align="center">
-              {
-                //medicine.fabricante
-              }
-              Aché
-            </Grid>
-
-            <Grid item xs={4} align="left">
-              <List>
-                {[
-                  { nome: "Cafeína", quantidade: "30 mg" },
-                  { nome: "Paracetamol", quantidade: "300 mg" },
-                  { nome: "Diclofenaco Sódico", quantidade: "50 mg" },
-                  { nome: "Carisoprodol", quantidade: "125 mg" },
-                ].map((composto, index) => (
-                  <li key={index}>
-                    {composto.nome} {composto.quantidade}
-                  </li>
-                ))}
-              </List>
-            </Grid>
-            <Grid item md={2} xs={2} align="center">
-              <div>
-                <IconButton
-                  aria-label="Delete"
-                  onClick={() => this.props.onDelete(this.props.medicine)}
-                >
-                  <DeleteIcon />
-                </IconButton>
-
-                <IconButton
-                  aria-label="Edit"
-                  onClick={() => this.props.onUpdate(this.props.medicine.id)}
-                >
-                  <EditIcon />
-                </IconButton>
-              </div>
-            </Grid>
-          </Grid>
+          {listMedicine.map((medicine, index) => (
+            <Box key={medicine.id}>
+              <Divider />
+              <TheMedicine medicine={medicine} onDelete={handleConfirmDelete} />
+            </Box>
+          ))}
         </Box>
       </Box>
+
+      <Dialog
+        open={values.openDialog}
+        TransitionComponent={TransitionUp}
+        keepMounted
+        fullWidth={true}
+        onClose={handleCloseDialog}
+      >
+        <DialogTitle id="alert-dialog-slide-title">
+          Confirm delete?
+          <Divider />
+        </DialogTitle>
+
+        <DialogContent>
+          <TheMedicine
+            medicine={values.medicineDelete}
+            dialog
+          />
+        </DialogContent>
+
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Disagree
+          </Button>
+          <Button color="primary">Agree</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Backdrop
+      style={{zIndex: 100,
+        color: '#fff'}}
+          open={values.openBackDrop}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
     </Container>
   );
 }
