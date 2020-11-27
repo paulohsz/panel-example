@@ -9,7 +9,7 @@ import {
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 
-function TheMedicine({ medicine, dialog, onDelete }) {
+function TheMedicine({ medicine, dialog, onDelete, onUpdate }) {
 
   return (
     <Grid container spacing={0} alignItems="center" justify="space-between">
@@ -42,7 +42,7 @@ function TheMedicine({ medicine, dialog, onDelete }) {
 
           <IconButton
             aria-label="Edit"
-            onClick={() => this.props.onUpdate(medicine.id)}
+            onClick={() => onUpdate(medicine.id)}
           >
             <EditIcon />
           </IconButton>

@@ -1,18 +1,18 @@
 import React from 'react';
 import Menu from '../templates/basic/Menu';
 import { MenuData } from "../../data/initial_data.js";
-//import FormCreate from "../../components/forms/pharmacy/FormCreate";
 import ListMain from "../../components/forms/pharmacy/ListMain";
+import { SnackbarProvider } from 'notistack';
 
 
 function Home() {
 
 
   return (
-    <div>
+    <SnackbarProvider maxSnack={3}>
       <Menu MenuData={MenuData} />
       <ListMain />
-    </div>
+  </SnackbarProvider>
   );
 }
 

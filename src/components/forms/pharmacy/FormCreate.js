@@ -5,9 +5,6 @@ import * as PharmacyAPI from '../../../services/PharmacyAPI';
 import {
   Box,
   Button,
-  Card,
-  CardContent,
-  Container,
   Grid,
   TextField,
   Tooltip,
@@ -20,7 +17,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 
 import {DividerCompostos} from "./styles";
 
-function FormCreate() {
+function FormCreate({onClose}) {
   
   const [values, setValues] = useState({
     name: "",
@@ -141,9 +138,7 @@ function FormCreate() {
   }
 
   return (
-    <Container maxWidth="md">
-      <Card>
-        <CardContent>
+      <Box p={2}>
           <Typography gutterBottom variant="h5" component="h2" align="center">
             Register Medicine
           </Typography>
@@ -290,12 +285,17 @@ function FormCreate() {
             <Button type="submit" variant="contained" color="primary">
               Cadastrar
             </Button>
+            &nbsp;&nbsp;
+            <Button
+                variant="contained"
+                color="primary"
+                onClick={() => onClose()}
+                >
+                Cancel
+              </Button>
             </Typography>
           </form>
-        </CardContent>
-      </Card>
-      <pre>{JSON.stringify(values, null, 2)}</pre>
-    </Container>
+        </Box>
   );
 }
 

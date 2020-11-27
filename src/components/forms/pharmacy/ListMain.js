@@ -7,8 +7,6 @@ import {
   Container,
   Button,
   Grid,
-  //TextField,
-  //Tooltip,
   Typography,
   Divider,
   Dialog,
@@ -21,17 +19,24 @@ import {
 } from "@material-ui/core";
 
 import AddCircleOutline from "@material-ui/icons/AddCircleOutline";
+
+import { useSnackbar } from "notistack";
+
 import TheMedicine from "./TheMedicine";
+import FormCreate from "./FormCreate";
 
 const TransitionUp = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
 function ListMain() {
+  const { enqueueSnackbar } = useSnackbar();
+
   const [listMedicine, setListMedicine] = useState([]);
   const [values, setValues] = useState({
     openDialog: false,
-    openBackDrop: true,
+    openDialogUpdate: false,
+    openBackDrop: false,
     medicineDelete: { compostos: [] },
   });
 
@@ -52,115 +57,64 @@ function ListMain() {
     loadMedicine();
   }, []);
 
-  const handleConfirmDelete = (medicine) => {
+  const handleUpdate = (medicine => {
+    setValues({...values, openDialogUpdate: true});
+  })
+
+  const handleDelete = (medicine) => {
     setValues({ ...values, openDialog: true, medicineDelete: medicine });
   };
 
-  const handleCloseDialog = (medicine) => {
-    setValues({ ...values, openDialog: false });
-  }; /*
+  const handleConfirmDelete = async () => {
+    setValues({ ...values, openDialog: false, openBackDrop: true });
+    await PharmacyAPI.deleteMedicine(values.medicineDelete.id).then(
+      (response) => {
+        if (response.success) {
 
-        console.log("Deu ruim!");
-        console.log(error.errorMsg);
+          console.log("Sucess Delete!");
+          console.log(response);
 
-        return error.errorMsg;
+          setListMedicine(listMedicine.filter((medicine) => medicine.id !== values.medicineDelete.id));
+
+          enqueueSnackbar("Successfully deleted", { variant: "success" });
+
+          setValues({
+            ...values,
+            openDialog: false,
+            openBackDrop: false,
+            medicineDelete: { compostos: [] },
+          });
+
+        } else {
+          const errorShow =
+            "Try again -- " +
+            (response.error.errorMsg.Erro
+              ? response.error.errorMsg.Erro +
+                " -- " +
+                response.error.errorMsgGeneral
+              : response.error.errorMsgGeneral);
+          enqueueSnackbar(errorShow, { variant: "error" });
+          setValues({
+            ...values,
+            openDialog: false,
+            openBackDrop: false,
+            medicineDelete: { compostos: [] },
+          });
+          console.log("Deu ruim!");
+          console.log(response.error);
+        }
       }
-    } catch (e) {
-      console.log("Não pude executar a request");
-    }
-  };*/ /*const [values, setValues] = useState({
-    name: "",
-    fabricante: "",
-    descricao: "",
-    observacao: "",
-    compostos: [{ nome: "", quantidade: "" }],
-    errors: {
-      nome: "",
-      compostosNome: "",
-      compostosQuantidade: "",
-    },
-  });*/ /*const handleChange = () => (event) => {
-    setValues({ ...values, [event.target.id]: event.target.value });
-  };*/ /*const getMedicine = () => {
-    return {
-      nome: values.name,
-      fabricante: values.fabricante,
-      descricao: values.descricao,
-      observacao: values.observacao,
-      compostos: values.compostos,
-    };
-  };*/ /*const handleSubmit = (event) => {
-    event.preventDefault();
-
-    console.log("Submit!");
-
-    const medicine = getMedicine();
-
-    console.log(medicine);
-
-    handleSubmitCreate(medicine);
-  };*/ /*const handleAddFields = () => {
-    const valuesCompostos = [...values.compostos];
-    valuesCompostos.push({ nome: "", quantidade: "" });
-    console.log(valuesCompostos);
-    setValues({ ...values, compostos: valuesCompostos });
+    );
   };
 
-  const handleRemoveFields = (index) => {
-    const valuesCompostos = [...values.compostos];
-    valuesCompostos.splice(index, 1);
-    setValues({ ...values, compostos: valuesCompostos });
-  };*/
-
-  /*
-        console.log("Cadastrado com suceso!");
-        console.log(action);
-        return "OK";
-      } else {*/ /*
-  const handleSubmitCreate = async (medicine) => {
-    try {
-      const { success, action, error } = await PharmacyAPI.createMedicine(
-        medicine
-      );
-
-      if (success) {*/ /*
-  const handleCompostoChange = (index, event) => {
-    const valuesCompostos = [...values.compostos];
-    const { id, value } = event.target;
-*/
-  /*
-    if (index === 0) {
-      this.handleValidInputs(`compostos${this.CapitalizeFirstLetter(id)}`, value);
-    }*/
-  /*
-    if (id === "nome") {
-      valuesCompostos[index].nome = value;
-    } else {
-      valuesCompostos[index].quantidade = value;
-    }
-
-    setValues({ ...values, compostos: valuesCompostos });
+  const handleCloseDialog = () => {
+    setValues({ ...values, openDialog: false });
   };
-*/ /*this.props.dispatch(action);
-        this.setState({
-          openSnackBar: true,
-          messageSnackBarA: "Successfully created",
-          messageSnackBarB: "",
-          alertSnackBar: "success",
-        });*/ /*(error.errorStatus === 422) ?
-        this.setState({
-          messageSnackBarA: "Check the form",
-          messageSnackBarB: "",
-          alertSnackBar: "warning",
-        })
-        : this.setState({
-          messageSnackBarA: error.errorMsgGeneral,
-          messageSnackBarB: "",
-          alertSnackBar: "error",
-        });
+  const handleCloseDialogUpdate = () => {
+    setValues({ ...values, openDialogUpdate: false });
+  };
 
-        this.setState({openSnackBar: true});
-        */ return (
+  return (
     <Container maxWidth="md">
       <Box
         border={1}
@@ -175,11 +129,11 @@ function ListMain() {
           <Grid></Grid>
           <Grid>
             <Typography gutterBottom variant="h5" component="h2" align="center">
-              Register Medicine
+              List Medicines
             </Typography>
           </Grid>
           <Grid>
-            <Button color="primary">
+            <Button color="primary" onClick={() => handleUpdate()}>
               <AddCircleOutline /> Create
             </Button>
           </Grid>
@@ -205,7 +159,7 @@ function ListMain() {
           {listMedicine.map((medicine, index) => (
             <Box key={medicine.id}>
               <Divider />
-              <TheMedicine medicine={medicine} onDelete={handleConfirmDelete} />
+              <TheMedicine medicine={medicine} onDelete={handleDelete} onUpdate={handleUpdate} />
             </Box>
           ))}
         </Box>
@@ -218,32 +172,41 @@ function ListMain() {
         fullWidth={true}
         onClose={handleCloseDialog}
       >
-        <DialogTitle id="alert-dialog-slide-title">
+        <DialogTitle>
           Confirm delete?
           <Divider />
         </DialogTitle>
 
         <DialogContent>
-          <TheMedicine
-            medicine={values.medicineDelete}
-            dialog
-          />
+          <TheMedicine medicine={values.medicineDelete} dialog />
         </DialogContent>
 
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
             Disagree
           </Button>
-          <Button color="primary">Agree</Button>
+          <Button onClick={handleConfirmDelete} color="primary">
+            Agree
+          </Button>
         </DialogActions>
       </Dialog>
 
+      <Dialog
+        open={values.openDialogUpdate}
+        TransitionComponent={TransitionUp}
+        
+        maxWidth="md"
+        onClose={handleCloseDialogUpdate}
+      >
+        <FormCreate onClose={handleCloseDialogUpdate}/>
+      </Dialog>
+
       <Backdrop
-      style={{zIndex: 100,
-        color: '#fff'}}
-          open={values.openBackDrop}>
-          <CircularProgress color="inherit" />
-        </Backdrop>
+        style={{ zIndex: 100, color: "#fff" }}
+        open={values.openBackDrop}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </Container>
   );
 }
