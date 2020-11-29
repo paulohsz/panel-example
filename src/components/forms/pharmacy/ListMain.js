@@ -32,18 +32,21 @@ const TransitionUp = React.forwardRef(function Transition(props, ref) {
 function ListMain() {
   const { enqueueSnackbar } = useSnackbar();
 
-  const [listMedicine, setListMedicine] = useState([{
-    id: "0",
-    nome: "Loading...", 
-    fabricante: "Loading...", 
-    compostos: [{nome: "Loading...", composto:""}]
-  }]);
+  const [listMedicine, setListMedicine] = useState([
+    {
+      id: "0",
+      nome: "Loading...",
+      fabricante: "Loading...",
+      compostos: [{ nome: "Loading...", composto: "" }],
+    },
+  ]);
 
   const [openDialogForm, setOpenDialogForm] = useState(false);
   const [openBackDrop, setOpenBackDrop] = useState(false);
-  const [openDialog, setOpenDialog] = useState(false);
+  const [openDialogDelete, setOpenDialogDelete] = useState(false);
 
   const [values, setValues] = useState({
+    formMedicine: {},
     medicineDelete: { compostos: [] },
   });
 
@@ -68,11 +71,17 @@ function ListMain() {
     setOpenDialogForm(true);
   };
 
+  const handleFormCancel = () => {
+    setOpenDialogForm(false);
+    setValues({ ...values, formMedicine: {} });
+  };
+
   const handleSubmitForm = (medicine) => {
     submitCreate(medicine);
   };
 
   const submitCreate = async (medicine) => {
+    
     setOpenDialogForm(false);
     setOpenBackDrop(true);
 
@@ -82,40 +91,25 @@ function ListMain() {
       );
 
       if (success) {
-        /*this.props.dispatch(action);
-        this.setState({
-          openSnackBar: true,
-          messageSnackBarA: "Successfully created",
-          messageSnackBarB: "",
-          alertSnackBar: "success",
-        });*/
-
         console.log("Cadastrado com sucesso!");
         console.log(action);
-        setListMedicine([action.payload, ...listMedicine]);
 
-        
-    setOpenBackDrop(false);
+        setValues({ ...values, formMedicine: {} });
+        setListMedicine([action.payload, ...listMedicine]);
+        setOpenBackDrop(false);
         enqueueSnackbar("Successfully created", { variant: "success" });
       } else {
-        /*(error.errorStatus === 422) ?
-        this.setState({
-          messageSnackBarA: "Check the form",
-          messageSnackBarB: "",
-          alertSnackBar: "warning",
-        })
-        : this.setState({
-          messageSnackBarA: error.errorMsgGeneral,
-          messageSnackBarB: "",
-          alertSnackBar: "error",
-        });
-        */
+        if (error.errorStatus === 422) {
+          enqueueSnackbar("Check the form", { variant: "warning" });
+        } else {
+          enqueueSnackbar(error.errorMsgGeneral, { variant: "error" });
+        }
 
+        setValues({ ...values, formMedicine: medicine });
         console.log("Deu ruim!");
         console.log(error.errorMsg);
         setOpenDialogForm(true);
-        
-    setOpenBackDrop(false);
+        setOpenBackDrop(false);
 
         return error.errorMsg;
       }
@@ -125,13 +119,12 @@ function ListMain() {
   };
 
   const handleDelete = (medicine) => {
-    setOpenDialog(true);
+    setOpenDialogDelete(true);
     setValues({ ...values, medicineDelete: medicine });
   };
 
   const handleConfirmDelete = async () => {
-
-    setOpenDialog(false);
+    setOpenDialogDelete(false);
     setOpenBackDrop(true);
 
     await PharmacyAPI.deleteMedicine(values.medicineDelete.id).then(
@@ -167,7 +160,7 @@ function ListMain() {
             ...values,
             medicineDelete: { compostos: [] },
           });
-          
+
           console.log("Deu ruim!");
           console.log(response.error);
         }
@@ -231,11 +224,11 @@ function ListMain() {
       </Box>
 
       <Dialog
-        open={openDialog}
+        open={openDialogDelete}
         TransitionComponent={TransitionUp}
         keepMounted
         fullWidth={true}
-        onClose={() => setOpenDialog(false)}
+        onClose={() => setOpenDialogDelete(false)}
       >
         <DialogTitle>
           Confirm delete?
@@ -247,7 +240,7 @@ function ListMain() {
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} color="primary">
+          <Button onClick={() => setOpenDialogDelete(false)} color="primary">
             Disagree
           </Button>
           <Button onClick={handleConfirmDelete} color="primary">
@@ -260,19 +253,16 @@ function ListMain() {
         open={openDialogForm}
         TransitionComponent={TransitionUp}
         maxWidth="md"
-        onClose={() => setOpenDialogForm(false)}
+        onClose={handleFormCancel}
       >
         <FormMedicine
-          onClose={() => setOpenDialogForm(false)}
+          onClose={handleFormCancel}
           onSubmit={handleSubmitForm}
-          updateId={() => setOpenDialogForm(false)}
+          medicine={values.formMedicine}
         />
       </Dialog>
 
-      <Backdrop
-        style={{ zIndex: 100, color: "#fff" }}
-        open={openBackDrop}
-      >
+      <Backdrop style={{ zIndex: 100, color: "#fff" }} open={openBackDrop}>
         <CircularProgress color="inherit" />
       </Backdrop>
     </Container>

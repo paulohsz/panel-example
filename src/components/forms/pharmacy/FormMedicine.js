@@ -15,14 +15,14 @@ import DeleteIcon from "@material-ui/icons/Delete";
 
 import {DividerCompostos} from "./styles";
 
-function FormMedicine({onClose, onSubmit}) {
+function FormMedicine({onClose, onSubmit, medicine}) {
   
   const [values, setValues] = useState({
-    name: "",
-    fabricante: "",
-    descricao: "",
-    observacao: "",
-    compostos: [{ nome: "", quantidade: "" }],
+    name: medicine.nome ? medicine.nome : "",
+    fabricante: medicine.fabricante ? medicine.fabricante : "",
+    descricao: medicine.descricao ? medicine.descricao : "",
+    observacao: medicine.observacao ? medicine.observacao : "",
+    compostos: medicine.compostos ? medicine.compostos : [{ nome: "", quantidade: "" }],
     errors: {
       nome: "",
       compostosNome: "",
@@ -36,6 +36,7 @@ function FormMedicine({onClose, onSubmit}) {
 
   const getMedicine = () => {
     return { 
+      id: medicine.id,
       nome: values.name, 
       fabricante: values.fabricante,
       descricao: values.descricao,
