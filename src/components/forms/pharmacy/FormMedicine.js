@@ -1,7 +1,5 @@
 import React, { useState, Fragment } from "react";
 
-import * as PharmacyAPI from '../../../services/PharmacyAPI';
-
 import {
   Box,
   Button,
@@ -17,7 +15,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 
 import {DividerCompostos} from "./styles";
 
-function FormCreate({onClose}) {
+function FormMedicine({onClose, onSubmit}) {
   
   const [values, setValues] = useState({
     name: "",
@@ -50,12 +48,11 @@ function FormCreate({onClose}) {
     event.preventDefault();
     
     console.log("Submit!");
-
     const medicine = getMedicine();
 
     console.log(medicine);
 
-    handleSubmitCreate(medicine);
+    onSubmit(medicine);
 
   };
 
@@ -90,52 +87,6 @@ function FormCreate({onClose}) {
 
     setValues({ ...values, compostos: valuesCompostos });
   };
-
-  const handleSubmitCreate = async (medicine) => {
-
-    try {
-
-      const { success, action, error } = await PharmacyAPI.createMedicine(medicine);
-
-      if (success) {
-        /*this.props.dispatch(action);
-        this.setState({
-          openSnackBar: true,
-          messageSnackBarA: "Successfully created",
-          messageSnackBarB: "",
-          alertSnackBar: "success",
-        });*/
-        console.log("Cadastrado com suceso!");
-        console.log(action);
-        return "OK";
-
-      } else {
-        /*(error.errorStatus === 422) ?
-        this.setState({
-          messageSnackBarA: "Check the form",
-          messageSnackBarB: "",
-          alertSnackBar: "warning",
-        })
-        : this.setState({
-          messageSnackBarA: error.errorMsgGeneral,
-          messageSnackBarB: "",
-          alertSnackBar: "error",
-        });
-
-        this.setState({openSnackBar: true});
-        */
-
-       console.log("Deu ruim!");
-       console.log(error.errorMsg);
-
-        return error.errorMsg;
-      }
-
-    } catch (e) {
-      console.log('Não pude executar a request');
-    }
-
-  }
 
   return (
       <Box p={2}>
@@ -299,4 +250,4 @@ function FormCreate({onClose}) {
   );
 }
 
-export default FormCreate;
+export default FormMedicine;

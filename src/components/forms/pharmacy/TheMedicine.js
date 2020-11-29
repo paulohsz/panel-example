@@ -21,7 +21,7 @@ function TheMedicine({ medicine, dialog, onDelete, onUpdate }) {
         {medicine.fabricante}
       </Grid>
 
-      <Grid item md={dialog ? 6 : 4} xs={dialog ? 7 : 5}align="left">
+      <Grid item xs={dialog ? 6 : 4} align="left">
         <List>
           {medicine.compostos.map((composto, index) => (
             <li key={index}>

@@ -1,8 +1,12 @@
 import axios from "axios";
+
+import config from './../config';
+const {  apiUrl } = config;
+
 //import { getToken } from "./auth";
 
 const api = axios.create({
-  baseURL: "http://api2.gdteam.com.br/api/"
+  baseURL: apiUrl
 });
 
 /*api.interceptors.request.use(async config => {
