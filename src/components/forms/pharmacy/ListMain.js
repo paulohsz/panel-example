@@ -67,7 +67,10 @@ function ListMain() {
     loadMedicine();
   }, []);
 
-  const handleUpdate = (idMedicine) => {
+  const handleUpdate = (medicine) => {
+    setOpenDialogForm(false);
+    setValues({ ...values, formMedicine: medicine });
+
     setOpenDialogForm(true);
   };
 
@@ -77,11 +80,68 @@ function ListMain() {
   };
 
   const handleSubmitForm = (medicine) => {
-    submitCreate(medicine);
+
+    if (medicine.id === null) {
+      return submitCreate(medicine);
+    }
+
+    return submitUpdate(medicine);
   };
+  
+  const submitUpdate = async (medicine) => {
+    setOpenDialogForm(false);
+    setOpenBackDrop(true);
+
+    try {
+      const { success, action, error } = await PharmacyAPI.updateMedicine(
+        medicine
+      );
+
+      if (success) {
+        console.log("Atualização realizada com sucesso!");
+        console.log(action);
+
+        setValues({ ...values, formMedicine: {} });
+        setListMedicine(listMedicine.map((medicine) => {
+          if (action.payload.id === medicine.id) {
+            return action.payload;
+          } else {
+            return medicine;
+          }
+        }));
+
+        
+
+
+        setOpenBackDrop(false);
+        enqueueSnackbar("Successfully update", { variant: "success" });
+
+        return "success";
+      } else {
+        if (error.errorStatus === 422) {
+          enqueueSnackbar("Check the form", { variant: "warning" });
+        } else {
+          enqueueSnackbar(error.errorMsgGeneral, { variant: "error" });
+        }
+
+        setValues({ ...values, formMedicine: medicine });
+        console.log("Deu ruim!");
+        console.log(error.errorMsg);
+        setOpenDialogForm(true);
+        setOpenBackDrop(false);
+        return error.errorMsg;
+      }
+    } catch (e) {
+      enqueueSnackbar("Erro ao executar a requisição contate o administrador", { variant: "error" });
+      setOpenDialogForm(true);
+      setOpenBackDrop(false);
+      console.log("Não pode executar a request");
+      return null;
+    }
+  };
+  
 
   const submitCreate = async (medicine) => {
-    
     setOpenDialogForm(false);
     setOpenBackDrop(true);
 
@@ -98,6 +158,8 @@ function ListMain() {
         setListMedicine([action.payload, ...listMedicine]);
         setOpenBackDrop(false);
         enqueueSnackbar("Successfully created", { variant: "success" });
+
+        return "success";
       } else {
         if (error.errorStatus === 422) {
           enqueueSnackbar("Check the form", { variant: "warning" });
@@ -110,11 +172,14 @@ function ListMain() {
         console.log(error.errorMsg);
         setOpenDialogForm(true);
         setOpenBackDrop(false);
-
         return error.errorMsg;
       }
     } catch (e) {
-      console.log("Não pude executar a request");
+      enqueueSnackbar("Erro ao executar a requisição contate o administrador", { variant: "error" });
+      setOpenDialogForm(true);
+      setOpenBackDrop(false);
+      console.log("Não pode executar a request");
+      return null;
     }
   };
 
@@ -211,7 +276,7 @@ function ListMain() {
             </Grid>
           </Grid>
           {listMedicine.map((medicine, index) => (
-            <Box key={medicine.id}>
+            <Box key={`medicina_${medicine.id}`}>
               <Divider />
               <TheMedicine
                 medicine={medicine}

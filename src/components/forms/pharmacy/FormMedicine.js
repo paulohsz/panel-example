@@ -36,7 +36,7 @@ function FormMedicine({onClose, onSubmit, medicine}) {
 
   const getMedicine = () => {
     return { 
-      id: medicine.id,
+      id: medicine.id ? medicine.id : null,
       nome: values.name, 
       fabricante: values.fabricante,
       descricao: values.descricao,
@@ -45,16 +45,18 @@ function FormMedicine({onClose, onSubmit, medicine}) {
     };
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit =  async (event) => {
     event.preventDefault();
     
     console.log("Submit!");
     const medicine = getMedicine();
-
-    console.log(medicine);
-
-    onSubmit(medicine);
-
+    await onSubmit(medicine).then(resp => {
+      if (resp === ("success" || null)) {
+        console.log(resp);
+        return;
+      }
+      console.log(resp);
+    });
   };
 
   const handleAddFields = () => {
@@ -105,6 +107,8 @@ function FormMedicine({onClose, onSubmit, medicine}) {
               size="small"
               margin="normal"
               fullWidth
+              helperText={values.errors.nome}
+              error={ values.errors.nome === "" ? false : true}
             />
 
             <TextField
@@ -235,7 +239,8 @@ function FormMedicine({onClose, onSubmit, medicine}) {
             </Box>
             <Typography  component="div" align="center">
             <Button type="submit" variant="contained" color="primary">
-              Cadastrar
+              { !medicine.id && `Register`}
+              { medicine.id && `Update`}
             </Button>
             &nbsp;&nbsp;
             <Button

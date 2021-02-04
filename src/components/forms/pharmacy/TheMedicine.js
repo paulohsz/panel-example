@@ -42,7 +42,7 @@ function TheMedicine({ medicine, dialog, onDelete, onUpdate }) {
 
           <IconButton
             aria-label="Edit"
-            onClick={() => onUpdate(medicine.id)}
+            onClick={() => onUpdate(medicine)}
           >
             <EditIcon />
           </IconButton>
