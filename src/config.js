@@ -1,5 +1,5 @@
 const config = {
-  apiUrl: 'http://localhost/api',
+  apiUrl: 'http://api2.gdteam.com.br/api',
   endpoints: {
     pharmacy: {
       read: {
